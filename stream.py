@@ -24,7 +24,7 @@ if "chat_history" not in st.session_state:
     st.session_state.chat_history = []
 
 # Streamlit page title
-st.title("🤖 GPT-4 ChatBot")
+st.title("🤖 Accountability ChatBot")
 
 # Display chat history
 for message in st.session_state.chat_history:
