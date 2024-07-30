@@ -23,6 +23,18 @@ st.set_page_config(
 if "chat_history" not in st.session_state:
     st.session_state.chat_history = []
 
+# Define enablers and their corresponding indicators
+enablers = {
+    "Emotional Management": ["Emotional Awareness", "Stress Management", "Resilience", "Positive Action", "Emotional Regulation"],
+    "Limiting Beliefs Management": ["Belief Identification", "Thought Monitoring", "Reframing", "Self-Talk", "Proactive Prevention"],
+    "Self-Awareness": ["Values Identification", "Needs and Wants", "Strengths and Weaknesses", "Self-Esteem Alignment", "Reflective Practice"],
+    "Mindfulness": ["Present Moment Awareness", "Body Awareness", "Thought Observation", "Emotional Awareness", "Non-Judgmental Attitude"],
+    "Biased-Free Behavior": ["Inclusivity", "Cultural Competence", "Open-Mindedness", "Ego Management", "Respectful Communication"]
+}
+
+# Sidebar dropdown menu for enabler selection
+selected_enabler = st.sidebar.selectbox("Select an enabler", list(enablers.keys()))
+
 # Streamlit page title
 st.title("🤖 Accountability ChatBot")
 
@@ -39,21 +51,17 @@ if user_prompt:
     st.chat_message("user").markdown(user_prompt)
     st.session_state.chat_history.append({"role": "user", "content": user_prompt})
 
-    # Define the detailed task for the assistant
+    # Define the detailed task for the assistant based on the selected enabler
+    indicators = ", ".join(enablers[selected_enabler])
     detailed_task = (
-        "You have to give 5 questions for each enabler based on the indicator. "
-        "The enablers are Emotional Management, Limiting Beliefs Management, Self-Awareness, Mindfulness, Biased-Free Behavior. "
-        "The indicators are Emotional Awareness, Stress Management, Resilience, Positive Action, Emotional Regulation, Belief Identification, "
-        "Thought Monitoring, Reframing, Self-Talk, Proactive Prevention, Values Identification, Needs and Wants, Strengths and Weaknesses, "
-        "Self-Esteem Alignment, Reflective Practice, Present Moment Awareness, Body Awareness, Thought Observation, Emotional Awareness, "
-        "Non-Judgmental Attitude, Inclusivity, Cultural Competence, Open-Mindedness, Ego Management, Respectful Communication. "
-        "The response should be in the form of a question. For example, if the enabler is Emotional Management and the indicator is Emotional Awareness, "
-        "the question could be 'How do you manage your emotions?' Try to give an answer for each of the sub-enabler with its respective question "
-        "and try to give response in context of user prompt {user_prompt}."
+        f"You are only allowed to respond to queries related to the enabler '{selected_enabler}'. "
+        f"The indicators for this enabler are {indicators}. "
+        "If the user's query is not related to this enabler, you should politely decline to answer. "
+        f"and try to give response in context of user prompt: {user_prompt}.if it is not related to the enabler '{selected_enabler}', you should politely decline to answer."
     )
 
     # Concatenate the detailed task with the user prompt
-    full_prompt = detailed_task.replace("{user_prompt}", user_prompt)
+    full_prompt = detailed_task
 
     # Add the full prompt to the chat history for context
     st.session_state.chat_history.append({"role": "user", "content": full_prompt})
@@ -76,3 +84,5 @@ if user_prompt:
 
     # Remove the full prompt from chat history to only show the user prompt
     st.session_state.chat_history.pop(-2)
+
+   
